@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Creator(models.Model):
-    nickname = models.CharField('имя', max_length=100)
+    nickname = models.CharField('никнейм', max_length=100)
     dr = models.DateTimeField('дата регистриции', auto_now_add=True)
 
     def __str__(self):
@@ -11,8 +11,9 @@ class Creator(models.Model):
 
 class Poll(models.Model):
     creator = models.ForeignKey(Creator, verbose_name='creator', on_delete=models.CASCADE, related_name='polls')
-    theme = models.CharField('название', max_length=100)
+    theme = models.CharField('тема', max_length=100)
     dc = models.DateTimeField('дата создания', auto_now_add=True)
+    number = models.IntegerField('число участниов', default=0)
 
     def __str__(self):
         return self.theme

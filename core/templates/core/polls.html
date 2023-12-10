@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+Доступные опросы:</br>
+
+{% for poll in polls %}
+
+{{ poll }} -
+<a  href="{% url 'poll' id=poll.id %}">
+     <button type="submit">Участвовать</button></br>
+</a>
+
+{% endfor %}
+
+{% endblock %}
+
+

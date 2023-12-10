@@ -1,0 +1,82 @@
+/* The sidebar menu */
+.sidenav {
+    height: 100%; /* Full-height: remove this if you want "auto" height */
+    width: 160px; /* Set the width of the sidebar */
+    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+    z-index: 1; /* Stay on top */
+    top: 0; /* Stay at the top */
+    left: 0;
+    background-color: #f8f8d9; /* Black */
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 20px;
+}
+
+/* The navigation menu links */
+.sidenav a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #111;
+    display: block;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+    color: blue;
+}
+
+/* Style page content */
+.main {
+    margin-left: 160px; /* Same as the width of the sidebar */
+    padding: 0px 10px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+
+table {
+    font-family: "Lucide Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size : 16px;
+    width: 640px;
+    text-align: center;
+    border-collapse: collapse;
+    background: #f8f8d9;
+    margin: 10px;
+}
+th {
+    color: #111;
+    border-bottom: 1px solid #37B5A5;
+    border-left: 1px solid #37B5A5;
+    padding: 12px 17px;
+}
+td {
+    color: #111;
+    border-bottom: 1px solid #37B5A5;
+    border-left: 1px solid #37B5A5;
+    padding: 7px 17px;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover td {
+    text-decoration: none;
+}
+
+tr:hover td.link {
+    text-decoration: underline;
+}
+
+a.text {
+  text-decoration: none;
+  color: blue;
+}
+
+p.text {
+    margin: 10px;
+    font-size : 20px;
+}
