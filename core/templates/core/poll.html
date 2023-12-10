@@ -1,0 +1,23 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<form  style="background-color:#E6E6FA; display: inline-block; padding: 10px;"  method="POST">
+    {% csrf_token %}
+{% for question in poll.questions.all %}
+
+<p>{{ forloop.counter }}) {{question}}</p>
+    {% for answer in question.answers.all %}
+
+    <input type="radio" id="something" name="{{ question }}" required >
+    <label for="something">{{ answer }}</label></br>
+
+    {% endfor %}
+    </br>
+{% endfor %}
+
+     <button type="submit" name="send">Отправить</button></br>
+
+</form>
+
+{% endblock %}

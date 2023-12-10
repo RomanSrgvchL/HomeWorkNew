@@ -1,0 +1,21 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<table align="center" style="width: 90%; padding: 10px;">
+    <p class="text">Опросы пользователя "{{ creator }}"</p>
+    <tr>
+        <th style="width: 4%; border-left: none;">№</th>
+        <th style="width: 35%;">Тема опроса</th>
+        <th style="width: 45%;">Дата создания опроса</th>
+        <th style="width: 10%;">Количество участников</th>
+    </tr>
+    {% for poll in creator.polls.all %}
+        <tr>
+            <td style="border-left: none;">{{ forloop.counter }}</td>
+            <td>{{ poll }}</td>
+            <td>{{ poll.dc }}</td>
+            <td>{{ poll.number }}</td>
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}

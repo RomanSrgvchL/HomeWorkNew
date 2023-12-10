@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link type="text/css" href="{% static 'core/css/styles.css' %}" rel="stylesheet" />
+</head>
+<body>
+    <!-- Side navigation -->
+    <div class="sidenav">
+      <a href="{% url 'mainpage' %}">На главную</a></br>
+      <a href="#">Создать опрос</a></br>
+      <a href="{% url 'polls' %}">Опросы</a></br>
+      <a href="{% url 'creators' %}">Создатели опросов</a></br>
+      <a href="/admin/">Админка</a></br>
+    </div>
+    <!-- Page content -->
+    <div class="main">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
