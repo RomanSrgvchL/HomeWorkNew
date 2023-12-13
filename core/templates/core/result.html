@@ -1,0 +1,20 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<form  style="background-color:#E6E6FA; display: inline-block; padding: 10px;">
+    {% csrf_token %}
+{% for question in poll.questions.all %}
+
+<p>{{ forloop.counter }}) {{question}}</p>
+    {% for answer in question.answers.all %}
+
+     {{ answer.count }} &#8212; {{ answer }}</br>
+
+    {% endfor %}
+    </br>
+{% endfor %}
+
+</form>
+
+{% endblock %}

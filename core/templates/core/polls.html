@@ -2,16 +2,31 @@
 
 {% block content %}
 
-Доступные опросы:</br>
-
-{% for poll in polls %}
-
-{{ poll }} -
-<a  href="{% url 'poll' id=poll.id %}">
-     <button type="submit">Участвовать</button></br>
-</a>
-
-{% endfor %}
+<table align="center" style="width: 50%; padding: 10px;">
+    <tr>
+        <th style="width: 4%; border-left: none;">№</th>
+        <th style="width: 64%; border-left: none;">Доступные опросы</th>
+        <th style="width: 31%; border-left: none;">x</th>
+    </tr>
+    {% for poll in polls %}
+        <tr>
+            <td style="border-left: none;">{{ forloop.counter }}</td>
+            <td>{{ poll }}</td>
+            <td style="border-left: none;">
+                 <a href="{% url 'poll' id=poll.id %}" style="text-decoration: none;">
+                      <button type="submit" style="height: 35px; width: 100px;">
+                 Участвовать
+                      </button>
+                 </a>
+                <a  href="{% url 'result' id=poll.id %}">
+                      <button type="submit" style="height: 35px; width: 100px;">
+                 Результаты
+                      </button>
+                 </a>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
 
 {% endblock %}
 

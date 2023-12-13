@@ -1,8 +1,9 @@
+from django.contrib import messages
 from django.shortcuts import render
 from django.views import View
 
 from core import models
-from django.views.generic import ListView, DetailView, TemplateView
+from django.views.generic import ListView, DetailView, TemplateView, CreateView
 
 
 class Mainpage(TemplateView):
@@ -52,4 +53,21 @@ class Poll(DetailView):
         self.object = self.get_object()
         self.object.number += 1
         self.object.save()
+        messages.success(request, 'Форма успешно отправлена!')
+        # доработать - после обновления страницы сообщение должно пропадать
         return super().get(request, *args, **kwargs)
+
+    # доработать - после отправки формы увеличивать answer.count на 1
+
+class Result(DetailView):
+    template_name = 'core/result.html'
+    extra_context = {'title': 'Результаты'}
+    model = models.Poll
+    pk_url_kwarg = 'id'
+
+
+class Create(CreateView):
+    template_name = 'core/create.html'
+    extra_context = {'title': 'Создать опрос'}
+    model = models.Poll
+    fields = ['theme']
