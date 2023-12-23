@@ -9,7 +9,7 @@
 <p>{{ forloop.counter }}) {{question}}</p>
     {% for answer in question.answers.all %}
 
-    <input type="radio" id="something" name="{{ question }}" required >
+    <input type="radio" id="something" name="{{ question }}" value="{{ forloop.counter }}" required >
     <label for="something">{{ answer }}</label></br>
 
     {% endfor %}

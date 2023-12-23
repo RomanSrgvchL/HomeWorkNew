@@ -14,6 +14,7 @@ class Poll(models.Model):
     theme = models.CharField('тема', max_length=100)
     dc = models.DateTimeField('дата создания', auto_now_add=True)
     number = models.IntegerField('число участниов', default=0)
+    count_question = models.IntegerField('число вопросов', default=0)
 
     def __str__(self):
         return self.theme
@@ -22,6 +23,7 @@ class Poll(models.Model):
 class Question(models.Model):
     poll = models.ForeignKey(Poll, verbose_name='poll', on_delete=models.CASCADE, related_name='questions')
     question = models.CharField('вопрос', max_length=100)
+    count_answer = models.IntegerField('число ответов', default=0)
 
     def __str__(self):
         return self.question
@@ -30,7 +32,6 @@ class Question(models.Model):
 class Answer(models.Model):
     question = models.ForeignKey(Question, verbose_name='question', on_delete=models.CASCADE, related_name='answers')
     answer = models.CharField('ответ', max_length=100)
-    is_correct = models.BooleanField('выбран', default=False)
     count = models.IntegerField('счётчик', default=0)
 
     def __str__(self):

@@ -1,5 +1,6 @@
 from django.contrib import messages
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.views import View
 
 from core import models
@@ -54,10 +55,15 @@ class Poll(DetailView):
         self.object.number += 1
         self.object.save()
         messages.success(request, 'Форма успешно отправлена!')
-        # доработать - после обновления страницы сообщение должно пропадать
-        return super().get(request, *args, **kwargs)
 
-    # доработать - после отправки формы увеличивать answer.count на 1
+        for question in self.object.questions.all():
+            answer_id = request.POST.get(str(question))
+            answer = question.answers.all()[int(answer_id) - 1]
+            answer.count += 1
+            answer.save()
+
+        return redirect(request.path)
+
 
 class Result(DetailView):
     template_name = 'core/result.html'
@@ -69,5 +75,34 @@ class Result(DetailView):
 class Create(CreateView):
     template_name = 'core/create.html'
     extra_context = {'title': 'Создать опрос'}
-    model = models.Poll
-    fields = ['theme']
+    model = models.Creator
+    fields = ['nickname']
+
+    def form_valid(self, form):
+        creator = form.save(commit=True)
+        theme = self.request.POST.get('theme')
+        count_question = self.request.POST.get('count_question')
+        models.Poll.objects.create(creator=creator, theme=theme, count_question=count_question)
+        return redirect("nextcreate")
+
+    # поставить проверки на введённые значения
+
+class NextCreate(CreateView):
+    template_name = 'core/nextcreate.html'
+    extra_context = {'title': 'Создать опрос'}
+    model = models.Question
+    fields = ['poll', 'question', 'count_answer']
+    success_url = reverse_lazy('nextcreate')
+
+    def form_valid(self, form):
+        poll = models.Poll.objects.last()
+        question = self.request.POST.get('question')
+        count_answer = self.request.POST.get('count_answer')
+        models.Question.objects.create(poll=poll, question=question, count_answer=count_answer)
+        return redirect("nextcreate")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['count_question'] = models.Poll.objects.last().count_question
+        context['question_list'] = list(range(1, context['count_question'] + 1))
+        return context
