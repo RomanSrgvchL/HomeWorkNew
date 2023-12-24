@@ -1,7 +1,10 @@
 from django.contrib import messages
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
+from django.forms import formset_factory, modelformset_factory
+from .forms import QuestionForm, AnswerForm
 
 from core import models
 from django.views.generic import ListView, DetailView, TemplateView, CreateView
@@ -72,37 +75,65 @@ class Result(DetailView):
     pk_url_kwarg = 'id'
 
 
-class Create(CreateView):
-    template_name = 'core/create.html'
+class CreateCreator(CreateView):
+    template_name = 'core/createcreator.html'
     extra_context = {'title': 'Создать опрос'}
     model = models.Creator
     fields = ['nickname']
+    success_url = reverse_lazy('createpoll')
 
-    def form_valid(self, form):
-        creator = form.save(commit=True)
-        theme = self.request.POST.get('theme')
-        count_question = self.request.POST.get('count_question')
-        models.Poll.objects.create(creator=creator, theme=theme, count_question=count_question)
-        return redirect("nextcreate")
 
-    # поставить проверки на введённые значения
-
-class NextCreate(CreateView):
-    template_name = 'core/nextcreate.html'
+class CreatePoll(CreateView):
+    template_name = 'core/createpoll.html'
     extra_context = {'title': 'Создать опрос'}
-    model = models.Question
-    fields = ['poll', 'question', 'count_answer']
-    success_url = reverse_lazy('nextcreate')
+    model = models.Poll
+    fields = ['creator', 'theme', 'count_question']
+    success_url = reverse_lazy('createquestions')
 
-    def form_valid(self, form):
+
+class CreateQuestions(View):
+
+    def get(self, request, *args, **kwargs):
         poll = models.Poll.objects.last()
-        question = self.request.POST.get('question')
-        count_answer = self.request.POST.get('count_answer')
-        models.Question.objects.create(poll=poll, question=question, count_answer=count_answer)
-        return redirect("nextcreate")
+        QuestionFormSet = formset_factory(QuestionForm, extra=poll.count_question)
+        formset = QuestionFormSet()
+        return render(request, 'core/createquestions.html', {'formset': formset, 'title': 'Создать опрос'})
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['count_question'] = models.Poll.objects.last().count_question
-        context['question_list'] = list(range(1, context['count_question'] + 1))
-        return context
+    def post(self, request, *args, **kwargs):
+        poll = models.Poll.objects.last()
+        QuestionFormSet = formset_factory(QuestionForm, extra=poll.count_question)
+        formset = QuestionFormSet(request.POST)
+        if formset.is_valid():
+            for form in formset:
+                question = form.save()
+            return HttpResponseRedirect('/createanswers')
+        return render(request, 'core/createquestions.html', {'formset': formset, 'title': 'Создать опрос'})
+
+
+class CreateAnswers(View):
+
+    def get(self, request, *args, **kwargs):
+        poll = models.Poll.objects.last()
+        count_question = poll.count_question
+        sum = 0
+        if count_question > 1:
+            for i in range(count_question - 1, -1, -1):
+                question = models.Question.objects.all().order_by('-dc')[i]
+                sum += question.count_answer
+        else:
+            sum = models.Question.objects.last().count_answer
+        AnswerFormSet = formset_factory(AnswerForm, extra=sum)
+        formset = AnswerFormSet()
+        return render(request, 'core/createanswers.html', {'formset': formset, 'title': 'Создать опрос'})
+
+    def post(self, request, *args, **kwargs):
+        AnswerFormSet = formset_factory(AnswerForm, extra=2)
+        formset = AnswerFormSet(request.POST)
+        if formset.is_valid():
+            for form in formset:
+                answer = form.save()
+            return HttpResponseRedirect('/')
+        return render(request, 'core/createanswers.html', {'formset': formset, 'title': 'Создать опрос'})
+
+
+

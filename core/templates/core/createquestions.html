@@ -1,0 +1,19 @@
+<{% extends 'core/base.html' %}
+
+
+{% block content %}
+
+<div>
+  <h2>Этап 3</h2>
+  <hr>
+  <form style="background-color:#E6E6FA; display: inline-block; padding: 10px;" method="POST">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    {% for form in formset %}
+      {{ forloop.counter }}.{{ form.as_p }}
+    {% endfor %}
+    <input type="submit" value="Далее">
+  </form>
+</div>
+
+{% endblock %}
