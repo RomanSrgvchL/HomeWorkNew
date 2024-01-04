@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
-from django.forms import formset_factory, modelformset_factory
+from django.forms import formset_factory
 from .forms import QuestionForm, AnswerForm
 
 from core import models
@@ -90,6 +90,17 @@ class CreatePoll(CreateView):
     fields = ['creator', 'theme', 'count_question']
     success_url = reverse_lazy('createquestions')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if models.Creator.objects.count() >= 1:
+            last_creator = models.Creator.objects.last()
+            last_nickname = last_creator.nickname
+            creators_filter = models.Creator.objects.filter(nickname=last_nickname)
+            count = creators_filter.count()
+            if int(count) == 2:
+                last_creator.delete()
+        return context
+
 
 class CreateQuestions(View):
 
@@ -134,6 +145,3 @@ class CreateAnswers(View):
                 answer = form.save()
             return HttpResponseRedirect('/')
         return render(request, 'core/createanswers.html', {'formset': formset, 'title': 'Создать опрос'})
-
-
-

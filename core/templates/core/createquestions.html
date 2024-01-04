@@ -6,13 +6,13 @@
 <div>
   <h2>Этап 3</h2>
   <hr>
-  <form style="background-color:#E6E6FA; display: inline-block; padding: 10px;" method="POST">
+  <form style="background-color:#E6E6FA; display: inline-block; padding: 10px;" method="POST" autocomplete="off">
     {% csrf_token %}
     {{ formset.management_form }}
     {% for form in formset %}
       {{ forloop.counter }}.{{ form.as_p }}
     {% endfor %}
-    <input type="submit" value="Далее">
+    <input type="submit" value="Далее" style="height: 35px; width: 80px;">
   </form>
 </div>
 
